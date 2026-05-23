@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro Battle Agreement - iPad UI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --bg-base: rgba(15, 15, 20, 0.95); 
+            --bg-sidebar: rgba(20, 20, 25, 0.8);
+            --bg-content: rgba(10, 10, 15, 0.98);
+            --accent-main: #0A94D3; 
+            --accent-sec: #0f3460;
+            --border-light: rgba(255, 255, 255, 0.08); 
+            --text-white: #f8f9fa;
+            --text-gray: #a0a0a0;
+            --ipad-bezel: #0a0a0c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background: #0f0f13;
+            background-image: linear-gradient(45deg, #0f0f13 0%, #1a1a24 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-white);
+        }
+
+        .app-wrapper {
+            position: relative;
+            width: 1100px; 
+            height: 825px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-wrapper {
+            width: 100%;
+            height: 100%;
+            background: var(--ipad-bezel);
+            border-radius: 50px; 
+            position: relative;
+            padding: 25px; 
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.05);
+            border: 2px solid #222;
+        }
+
+        .glass-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #1a1a1c;
+            border-radius: 50%;
+            border: 1px solid #333;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .glass-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+        }
+
+        .ui-container {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-base);
+            border-radius: 30px; 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .top-header {
+            height: 70px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .app-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent-main);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 2;
+        }
+
+        .app-icon span {
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .app-title {
+            color: var(--text-white);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-title span {
+            color: var(--accent-main);
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-light);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+
+        .menu-label {
+            color: #666; 
+            font-size: 12px; 
+            margin-bottom: 5px; 
+            font-weight: 600; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding-left: 5px;
+            margin-top: 10px;
+        }
+
+        .menu-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-light);
+            border-left: 4px solid var(--border-light);
+            color: var(--text-white);
+            padding: 12px 15px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: left;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-btn:hover {
+            background: rgba(10, 148, 211, 0.1);
+            border-left-color: var(--accent-main);
+            border-color: rgba(10, 148, 211, 0.3);
+            transform: translateX(3px);
+        }
+
+        .menu-btn.green:hover {
+            background: rgba(46, 204, 113, 0.1);
+            border-left-color: #2ecc71;
+            border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        .menu-btn.red:hover {
+            background: rgba(231, 76, 60, 0.1);
+            border-left-color: #e74c3c;
+            border-color: rgba(231, 76, 60, 0.3);
+        }
+
+        .content-body {
+            flex: 1;
+            background: var(--bg-content);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .content-body::-webkit-scrollbar { width: 6px; }
+        .content-body::-webkit-scrollbar-track { background: transparent; }
+        .content-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+
+        .contract-container {
+            width: 100%;
+            max-width: 800px;
+            background: #111115;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.9);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background-image: 
+                linear-gradient(rgba(10, 148, 211, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(10, 148, 211, 0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .editable {
+            outline: none;
+            cursor: text;
+            transition: background 0.2s;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .editable:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .c-header-wrap {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--accent-main);
+            padding-bottom: 20px;
+        }
+
+        .main-logo {
+            max-width: 100%;
+            height: 90px;
+            object-fit: contain;
+            margin: 0 auto 10px auto;
+            display: block;
+        }
+
+        .c-subtitle {
+            font-size: 15px;
+            color: var(--accent-main);
+            letter-spacing: 2px;
+            margin-top: 5px;
+            margin-bottom: 20px; 
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .sig-block {
+            text-align: center;
+            width: 28%;
+        }
+
+        .sig-line {
+            width: 100%;
+            border-bottom: 1px solid #fff;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            font-family: 'Brush Script MT', cursive, 'Kanit'; 
+            font-size: 19px;
+            color: var(--accent-main);
+            min-height: 30px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .sig-role {
+            font-size: 11px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .versus-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .team-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 220px;
+        }
+
+        .logo-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #1a1a24;
+            border: 3px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        .logo-circle:hover {
+            border-color: var(--accent-main);
+            box-shadow: 0 0 20px rgba(10, 148, 211, 0.4);
+        }
+
+        .logo-circle img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            z-index: 2;
+        }
+
+        .logo-circle span {
+            color: #555;
+            font-size: 11px;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .team-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            padding: 5px 0;
+        }
+
+        .vs-badge {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-main);
+            background: #111;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-main);
+            text-shadow: 0 0 10px rgba(10, 148, 211, 0.5);
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid var(--accent-main);
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-card.full {
+            grid-column: span 2;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 40%;
+        }
+
+        .info-val {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            text-align: right;
+            width: 60%;
+        }
+
+        .rules-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .rules-title {
+            font-size: 17px;
+            color: var(--accent-main);
+            font-weight: 700;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rules-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent-main), transparent);
+        }
+
+        .rule-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .rule-no {
+            color: var(--accent-main);
+            font-weight: 700;
+            min-width: 25px;
+        }
+
+        .rule-item-note {
+            margin-top: 15px; 
+            border-top: 1px dashed rgba(255,255,255,0.1); 
+            padding-top: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <div class="glass-wrapper">
+            <div class="ui-container">
+                <div class="top-header">
+                    <div class="header-left">
+                        <div class="app-icon" onclick="document.getElementById('app-icon-upload').click()">
+                            <span>LOGO</span>
+                            <img id="app-icon-preview" src="" style="display: none;">
+                        </div>
+                        <input type="file" id="app-icon-upload" accept="image/*" onchange="previewImage(event, 'app-icon-preview')" style="display: none;">
+                        
+                        <div class="app-title">
+                            STORY PROTOCOL
+                            <span>DOCUMENT EDITOR - IPAD UI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="main-content">
+                    <div class="sidebar">
+                        <div class="menu-label" style="margin-top: 0;">INFO MANAGEMENT</div>
+                        
+                        <button class="menu-btn green" onclick="addInfoField()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            เพิ่มหัวข้อข้อมูล
+                        </button>
+                        
+                        <button class="menu-btn red" onclick="removeInfoField()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            ลบหัวข้อล่าสุด
+                        </button>
+
+                        <div class="menu-label">RULE MANAGEMENT</div>
+                        
+                        <button class="menu-btn green" onclick="addRule()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            เพิ่มกฎใหม่ (Add Rule)
+                        </button>
+                        
+                        <button class="menu-btn red" onclick="removeLastRule()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            ลบกฎล่าสุด (Remove Rule)
+                        </button>
+
+                        <div class="menu-label">ACTION MENU</div>
+
+                        <button class="menu-btn" onclick="downloadPNG()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            ส่งออกเอกสาร (Export PNG)
+                        </button>
+                        
+                        <button class="menu-btn" onclick="resetLogos()" style="border-left-color: #00d2d3;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+                            ล้างรูปภาพทั้งหมด
+                        </button>
+                    </div>
+
+                    <div class="content-body">
+                        <div class="contract-container" id="contract">
+                            
+                            <div class="c-header-wrap">
+                                <img src="logo.png" alt="METRO Logo" class="main-logo" id="main-logo-img" onclick="document.getElementById('main-logo-upload').click()" style="cursor: pointer;">
+                                <input type="file" id="main-logo-upload" accept="image/*" onchange="previewImage(event, 'main-logo-img')" style="display: none;">
+                                
+                                <div class="c-subtitle editable" contenteditable="true">หนังสือสัญญาข้อตกลงการปะทะ (STORY)</div>
+
+                                <div class="signature-area">
+                                    <div class="sig-block">
+                                        <div class="sig-line editable" contenteditable="true">[ลงชื่อ]</div>
+                                        <div class="sig-role editable" contenteditable="true">ตัวแทน 1</div>
+                                    </div>
+                                    <div class="sig-block">
+                                        <div class="sig-line editable" contenteditable="true" style="color: var(--accent-main);">[ลงชื่อ]</div>
+                                        <div class="sig-role editable" contenteditable="true">เจ้าหน้าที่สภา (พยาน)</div>
+                                    </div>
+                                    <div class="sig-block">
+                                        <div class="sig-line editable" contenteditable="true">[ลงชื่อ]</div>
+                                        <div class="sig-role editable" contenteditable="true">ตัวแทน 2</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="versus-section">
+                                <div class="team-box">
+                                    <div class="logo-circle" onclick="document.getElementById('logo1').click()">
+                                        <span>Click to Upload</span>
+                                        <img id="img-preview-1" src="" style="display: none;">
+                                    </div>
+                                    <input type="file" id="logo1" accept="image/*" onchange="previewImage(event, 'img-preview-1')">
+                                    <div class="team-name editable" contenteditable="true">[ระบุชื่อแก๊ง 1]</div>
+                                </div>
+                                
+                                <div class="vs-badge">VS</div>
+                                
+                                <div class="team-box">
+                                    <div class="logo-circle" onclick="document.getElementById('logo2').click()">
+                                        <span>Click to Upload</span>
+                                        <img id="img-preview-2" src="" style="display: none;">
+                                    </div>
+                                    <input type="file" id="logo2" accept="image/*" onchange="previewImage(event, 'img-preview-2')">
+                                    <div class="team-name editable" contenteditable="true">[ระบุชื่อแก๊ง 2]</div>
+                                </div>
+                            </div>
+
+                            <div class="info-cards" id="info-cards-list"></div>
+
+                            <div class="rules-container">
+                                <div class="rules-title editable" contenteditable="true">กฎและข้อบังคับในการปะทะ (RULES OF ENGAGEMENT)</div>
+                                
+                                <div id="rules-list"></div>
+
+                                <div class="rule-item rule-item-note">
+                                    <div class="rule-no" style="color: var(--accent-main);">*</div>
+                                    <div class="editable" contenteditable="true" style="font-size: 12px; color: #888; width: 100%;">
+                                        [ให้สภาระบุหมายเหตุเพิ่มเติม (ถ้ามี)]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRuleCount = 0;
+        let currentInfoCount = 0;
+
+        function addInfoField() {
+            currentInfoCount++;
+            const container = document.getElementById('info-cards-list');
+            const card = document.createElement('div');
+            card.className = 'info-card';
+            card.id = 'info-node-' + currentInfoCount;
+            
+            card.innerHTML = `
+                <div class="info-label editable" contenteditable="true">[หัวข้อ]</div>
+                <div class="info-val editable" contenteditable="true">[ให้สภาระบุ]</div>
+            `;
+            
+            container.appendChild(card);
+        }
+
+        function removeInfoField() {
+            if (currentInfoCount > 0) {
+                const lastInfo = document.getElementById('info-node-' + currentInfoCount);
+                if (lastInfo) {
+                    lastInfo.remove();
+                    currentInfoCount--;
+                }
+            }
+        }
+
+        function addRule() {
+            currentRuleCount++;
+            const rulesList = document.getElementById('rules-list');
+            
+            const ruleItem = document.createElement('div');
+            ruleItem.className = 'rule-item';
+            ruleItem.id = 'rule-node-' + currentRuleCount;
+            
+            const ruleNo = document.createElement('div');
+            ruleNo.className = 'rule-no';
+            ruleNo.innerText = currentRuleCount < 10 ? '0' + currentRuleCount : currentRuleCount;
+            
+            const ruleText = document.createElement('div');
+            ruleText.className = 'editable';
+            ruleText.contentEditable = "true";
+            ruleText.style.width = "100%";
+            ruleText.innerText = "[ให้สภาระบุกฎและข้อบังคับ]";
+            
+            ruleItem.appendChild(ruleNo);
+            ruleItem.appendChild(ruleText);
+            rulesList.appendChild(ruleItem);
+        }
+
+        function removeLastRule() {
+            if (currentRuleCount > 0) {
+                const lastRule = document.getElementById('rule-node-' + currentRuleCount);
+                if (lastRule) {
+                    lastRule.remove();
+                    currentRuleCount--;
+                }
+            }
+        }
+
+        function previewImage(event, previewId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(previewId);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    if(img.previousElementSibling && img.previousElementSibling.tagName === 'SPAN') {
+                        img.previousElementSibling.style.display = 'none';
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetLogos() {
+            document.getElementById('logo1').value = "";
+            document.getElementById('logo2').value = "";
+            document.getElementById('main-logo-upload').value = "";
+            document.getElementById('app-icon-upload').value = "";
+            
+            const img1 = document.getElementById('img-preview-1');
+            img1.src = "";
+            img1.style.display = 'none';
+            if(img1.previousElementSibling) img1.previousElementSibling.style.display = 'block';
+
+            const img2 = document.getElementById('img-preview-2');
+            img2.src = "";
+            img2.style.display = 'none';
+            if(img2.previousElementSibling) img2.previousElementSibling.style.display = 'block';
+
+            const mainImg = document.getElementById('main-logo-img');
+            mainImg.src = "logo.png";
+            
+            const appIcon = document.getElementById('app-icon-preview');
+            appIcon.src = "";
+            appIcon.style.display = 'none';
+            if(appIcon.previousElementSibling) appIcon.previousElementSibling.style.display = 'block';
+        }
+
+        function downloadPNG() {
+            const contract = document.getElementById('contract');
+            const editables = document.querySelectorAll('.editable');
+            
+            editables.forEach(el => el.blur());
+
+            html2canvas(contract, {
+                scale: 2, 
+                useCORS: true,
+                backgroundColor: "#111115"
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'metro_battle_agreement.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>
